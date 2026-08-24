@@ -1,0 +1,490 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Maker Pro</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-all: #6c757d;
+            --bg-japanese: #e74c3c;
+            --bg-math: #3498db;
+            --bg-english: #9b59b6;
+            --bg-science: #2ecc71;
+            --bg-society: #f1c40f;
+            --bg-other: #1abc9c;
+            --text-dark: #2c3e50;
+            --text-light: #ffffff;
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --transition-smooth: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            margin: 0;
+            padding: 40px 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 650px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 35px;
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            font-size: 24px;
+            text-align: center;
+            color: var(--text-dark);
+            margin-bottom: 30px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        /* プログレスバー */
+        .progress-container {
+            margin-bottom: 30px;
+            background: #eee;
+            border-radius: 10px;
+            overflow: hidden;
+            height: 10px;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+            transition: width 0.4s ease;
+        }
+
+        .progress-text {
+            text-align: right;
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-top: 6px;
+            font-weight: 500;
+        }
+
+        /* 入力エリア */
+        .input-group {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 30px;
+            background: #fff;
+            padding: 6px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            border: 1px solid #e2e8f0;
+        }
+
+        select {
+            padding: 12px;
+            border: none;
+            background: #f8fafc;
+            border-radius: 8px;
+            font-size: 14px;
+            color: var(--text-dark);
+            font-weight: 500;
+            outline: none;
+            cursor: pointer;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            font-size: 14px;
+            outline: none;
+            color: var(--text-dark);
+        }
+
+        .add-btn {
+            padding: 12px 24px;
+            background-color: #2c3e50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition-smooth);
+        }
+
+        .add-btn:hover {
+            background-color: #1a252f;
+            transform: translateY(-1px);
+        }
+
+        /* 付箋風タブシステム */
+        .sticky-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 25px;
+            justify-content: center;
+        }
+
+        .tab {
+            padding: 10px 16px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            box-shadow: 2px 4px 8px rgba(0,0,0,0.05);
+            position: relative;
+            border: none;
+            color: var(--text-light);
+        }
+
+        .tab::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            border-width: 0 0 10px 10px;
+            border-style: solid;
+            border-color: transparent transparent rgba(0,0,0,0.1) transparent;
+        }
+
+        .tab:hover {
+            transform: translateY(-3px) rotate(-1px);
+            box-shadow: 3px 6px 12px rgba(0,0,0,0.1);
+        }
+
+        .tab.active {
+            transform: translateY(2px);
+            box-shadow: inset 1px 1px 4px rgba(0,0,0,0.15);
+            font-weight: 700;
+        }
+
+        .tab-all { background-color: var(--bg-all); }
+        .tab-japanese { background-color: var(--bg-japanese); }
+        .tab-math { background-color: var(--bg-math); }
+        .tab-english { background-color: var(--bg-english); }
+        .tab-science { background-color: var(--bg-science); }
+        .tab-society { background-color: var(--bg-society); }
+        .tab-other { background-color: var(--bg-other); }
+
+        /* タスクリスト */
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            background: #fff;
+            margin-bottom: 12px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+            border-left: 5px solid #ddd;
+            transition: var(--transition-smooth);
+            animation: fadeIn 0.3s ease;
+        }
+
+        li:hover {
+            transform: translateX(4px);
+        }
+
+        li.cat-japanese { border-left-color: var(--bg-japanese); }
+        li.cat-math { border-left-color: var(--bg-math); }
+        li.cat-english { border-left-color: var(--bg-english); }
+        li.cat-science { border-left-color: var(--bg-science); }
+        li.cat-society { border-left-color: var(--bg-society); }
+        li.cat-other { border-left-color: var(--bg-other); }
+
+        li.completed {
+            background: #f8fafc;
+            opacity: 0.6;
+        }
+        
+        li.completed span {
+            text-decoration: line-through;
+            color: #94a3b8;
+        }
+
+        li input[type="checkbox"] {
+            margin-right: 16px;
+            transform: scale(1.2);
+            cursor: pointer;
+            accent-color: #2c3e50;
+        }
+
+        .task-text {
+            font-size: 15px;
+            font-weight: 500;
+            color: #334155;
+            flex: 1;
+        }
+
+        .category-badge {
+            font-size: 11px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            color: #fff;
+            font-weight: 600;
+            margin-right: 12px;
+        }
+
+        .badge-japanese { background-color: var(--bg-japanese); }
+        .badge-math { background-color: var(--bg-math); }
+        .badge-english { background-color: var(--bg-english); }
+        .badge-science { background-color: var(--bg-science); }
+        .badge-society { background-color: var(--bg-society); }
+        .badge-other { background-color: var(--bg-other); }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 16px;
+            transition: color 0.2s;
+            padding: 4px 8px;
+        }
+
+        .delete-btn:hover {
+            color: #ef4444;
+        }
+
+        /* コントロールボタン */
+        .action-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            gap: 10px;
+        }
+
+        .action-btn {
+            padding: 10px 16px;
+            background: none;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            font-weight: 500;
+            color: #64748b;
+            transition: var(--transition-smooth);
+        }
+
+        .action-btn:hover {
+            background: #f1f5f9;
+            color: var(--text-dark);
+            border-color: #cbd5e1;
+        }
+
+        .clear-all-btn:hover {
+            background: #fef2f2;
+            color: #ef4444;
+            border-color: #fee2e2;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Study Maker</h1>
+    
+    <!-- 進捗バー -->
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+    <div class="progress-text" id="progressText">現在の達成率: 0%</div>
+
+    <!-- 入力エリア -->
+    <div class="input-group">
+        <select id="categoryInput">
+            <option value="math">数学</option>
+            <option value="japanese">国語</option>
+            <option value="english">英語</option>
+            <option value="science">理科</option>
+            <option value="society">社会</option>
+            <option value="other">その他</option>
+        </select>
+        <input type="text" id="taskInput" placeholder="課題を入力してください（例：ワーク P.20）" onkeypress="handleKeyPress(event)">
+        <button class="add-btn" onclick="addTask()">追加</button>
+    </div>
+
+    <!-- 付箋風カテゴリータブ -->
+    <div class="sticky-tabs">
+        <button class="tab tab-all active" onclick="filterCategory('all')">すべて</button>
+        <button class="tab tab-math" onclick="filterCategory('math')">数学</button>
+        <button class="tab tab-japanese" onclick="filterCategory('japanese')">国語</button>
+        <button class="tab tab-english" onclick="filterCategory('english')">英語</button>
+        <button class="tab tab-science" onclick="filterCategory('science')">理科</button>
+        <button class="tab tab-society" onclick="filterCategory('society')">社会</button>
+        <button class="tab tab-other" onclick="filterCategory('other')">その他</button>
+    </div>
+
+    <!-- タスクリスト -->
+    <ul id="taskList"></ul>
+
+    <!-- コントロールボタン -->
+    <div class="action-group">
+        <button class="action-btn" onclick="clearCompleted()">完了済みを削除</button>
+        <button class="action-btn clear-all-btn" onclick="clearAll()">すべて初期化</button>
+    </div>
+</div>
+
+<script>
+    let tasks = JSON.parse(localStorage.getItem('study_maker_tasks')) || [];
+    let currentFilter = 'all';
+
+    const categoryNames = {
+        japanese: '国語',
+        math: '数学',
+        english: '英語',
+        science: '理科',
+        society: '社会',
+        other: 'その他'
+    };
+
+    function renderTasks() {
+        const ul = document.getElementById('taskList');
+        ul.innerHTML = '';
+
+        const filteredTasks = tasks.filter(task => currentFilter === 'all' || task.category === currentFilter);
+
+        filteredTasks.forEach(task => {
+            const li = document.createElement('li');
+            li.className = `cat-${task.category} ${task.completed ? 'completed' : ''}`;
+            
+            li.innerHTML = `
+                <input type="checkbox" ${task.completed ? 'checked' : ''} onclick="toggleTask('${task.id}')">
+                <span class="category-badge badge-${task.category}">${categoryNames[task.category]}</span>
+                <span class="task-text">${escapeHtml(task.text)}</span>
+                <button class="delete-btn" onclick="deleteTask('${task.id}')">✕</button>
+            `;
+            ul.appendChild(li);
+        });
+
+        updateProgress();
+        saveTasks();
+    }
+
+    function addTask() {
+        const input = document.getElementById('taskInput');
+        const categorySelect = document.getElementById('categoryInput');
+        const text = input.value.trim();
+        const category = categorySelect.value;
+
+        if (text === '') return;
+
+        const newTask = {
+            id: Date.now().toString(),
+            text: text,
+            category: category,
+            completed: false
+        };
+
+        tasks.push(newTask);
+        input.value = '';
+        renderTasks();
+    }
+
+    function handleKeyPress(event) {
+        if (event.key === 'Enter') {
+            addTask();
+        }
+    }
+
+    function toggleTask(id) {
+        tasks = tasks.map(task => {
+            if (task.id === id) {
+                return { ...task, completed: !task.completed };
+            }
+            return task;
+        });
+        renderTasks();
+    }
+
+    function deleteTask(id) {
+        tasks = tasks.filter(task => task.id !== id);
+        renderTasks();
+    }
+
+    function filterCategory(category) {
+        currentFilter = category;
+        
+        // アクティブタブの切り替え
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        
+        const activeTab = document.querySelector(`.tab-${category}`);
+        if (activeTab) activeTab.classList.add('active');
+
+        renderTasks();
+    }
+
+    function updateProgress() {
+        if (tasks.length === 0) {
+            document.getElementById('progressBar').style.width = '0%';
+            document.getElementById('progressText').innerText = '現在の達成率: 0%';
+            return;
+        }
+
+        const completedCount = tasks.filter(task => task.completed).length;
+        const percentage = Math.round((completedCount / tasks.length) * 100);
+
+        document.getElementById('progressBar').style.width = `${percentage}%`;
+        document.getElementById('progressText').innerText = `現在の達成率: ${percentage}%`;
+    }
+
+    function clearCompleted() {
+        tasks = tasks.filter(task => !task.completed);
+        renderTasks();
+    }
+
+    function clearAll() {
+        if (confirm('すべてのタスクデータを消去してもよろしいですか？')) {
+            tasks = [];
+            renderTasks();
+        }
+    }
+
+    function saveTasks() {
+        localStorage.setItem('study_maker_tasks', JSON.stringify(tasks));
+    }
+
+    function escapeHtml(string) {
+        return String(string).replace(/[&<>"']/g, function (s) {
+            return {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            }[s];
+        });
+    }
+
+    // 初期読み込み
+    renderTasks();
+</script>
+
+</body>
+</html>
