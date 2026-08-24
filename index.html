@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -193,7 +192,7 @@
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             background: #f8f9fa;
             padding: 15px;
             border-radius: 12px;
@@ -286,10 +285,11 @@
             overflow: hidden;
         }
 
+        /* 完了時のスタイル */
         li.completed {
             background: #f8f9fa;
-            border-left-color: var(--success) !important;
-            opacity: 0.75;
+            opacity: 0.7;
+            border-left-color: var(--text-sub);
         }
 
         li.completed .task-text {
@@ -421,6 +421,7 @@
         .control-buttons {
             display: flex;
             justify-content: flex-end;
+            flex-wrap: wrap;
             gap: 10px;
             margin-top: 25px;
             border-top: 1px solid #eef2f5;
@@ -445,6 +446,145 @@
             color: var(--danger);
         }
 
+        .secondary-btn {
+            background: none;
+            border: 1px solid #b2bec3;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            color: var(--text-main);
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .secondary-btn:hover {
+            background: #f1f2f6;
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* モーダル（履歴画面）のスタイル */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background-color: white;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 12px;
+            margin-bottom: 15px;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 18px;
+            color: var(--text-main);
+        }
+
+        .close-modal-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--text-sub);
+        }
+
+        .modal-body {
+            overflow-y: auto;
+            flex-grow: 1;
+            margin-bottom: 15px;
+            max-height: 50vh;
+        }
+
+        .history-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            border-left: 4px solid var(--success);
+        }
+
+        .history-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .history-text {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .restore-btn {
+            background: #2ecc71;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: background 0.2s;
+        }
+
+        .restore-btn:hover {
+            background: #27ae60;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #eee;
+            padding-top: 12px;
+        }
+
         /* アニメーションキーフレーム */
         @keyframes fadeIn {
             from { opacity: 0; }
@@ -457,12 +597,12 @@
         }
 
         /* 各教科の左線・バッジ用カラー */
-        li.subj-math { border-left-color: var(--color-math); }
-        li.subj-lang { border-left-color: var(--color-lang); }
-        li.subj-eng { border-left-color: var(--color-eng); }
-        li.subj-sci { border-left-color: var(--color-sci); }
-        li.subj-soc { border-left-color: var(--color-soc); }
-        li.subj-other { border-left-color: var(--color-other); }
+        li.subj-math, .history-item.subj-math { border-left-color: var(--color-math); }
+        li.subj-lang, .history-item.subj-lang { border-left-color: var(--color-lang); }
+        li.subj-eng, .history-item.subj-eng { border-left-color: var(--color-eng); }
+        li.subj-sci, .history-item.subj-sci { border-left-color: var(--color-sci); }
+        li.subj-soc, .history-item.subj-soc { border-left-color: var(--color-soc); }
+        li.subj-other, .history-item.subj-other { border-left-color: var(--color-other); }
 
         .bg-math { background-color: var(--color-math); }
         .bg-lang { background-color: var(--color-lang); }
@@ -496,7 +636,6 @@
 
     <!-- 教科別付箋タブ -->
     <div class="subject-tabs" id="subjectTabContainer">
-        <!-- JSで動的に構築、または静的に設置 -->
         <button class="subject-tab tab-all active" onclick="filterSubject('all')">すべて</button>
         <button class="subject-tab tab-math" onclick="filterSubject('math')">数学</button>
         <button class="subject-tab tab-lang" onclick="filterSubject('lang')">国語</button>
@@ -555,8 +694,26 @@
 
     <!-- 管理用ボタン -->
     <div class="control-buttons">
+        <button class="secondary-btn" onclick="openHistoryModal()">完了履歴を見る</button>
         <button class="danger-btn" onclick="clearCompleted()">完了済みを削除</button>
         <button class="danger-btn" onclick="clearAll()">すべて初期化</button>
+    </div>
+</div>
+
+<!-- ================= 完了履歴モーダル ================= -->
+<div id="historyModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>完了した項目の履歴</h3>
+            <button class="close-modal-btn" onclick="closeHistoryModal()">&times;</button>
+        </div>
+        <div class="modal-body" id="historyListContainer">
+            <!-- 履歴アイテムがここに動的に入ります -->
+        </div>
+        <div class="modal-footer">
+            <button class="danger-btn" onclick="clearAllHistory()">履歴をすべて消去</button>
+            <button class="secondary-btn" onclick="closeHistoryModal()">閉じる</button>
+        </div>
     </div>
 </div>
 
@@ -566,7 +723,9 @@
         currentMode: 'task',      // 'task' or 'quiz'
         currentFilter: 'all',    // 'all', 'math', etc.
         tasks: [],
-        quizzes: []
+        quizzes: [],
+        taskHistory: [],
+        quizHistory: []
     };
 
     // 教科の日本語名とデザイン用マップ
@@ -585,36 +744,19 @@
         render();
     });
 
-    // データの読み込み (旧データ構造と新データ構造の互換性を確保)
+    // データの読み込み
     function loadData() {
-        // 1. 旧形式（前回のコード等）のデータを引き継ぐ救済措置
-        const oldTasks = localStorage.getItem('tasks');
-        const oldQuizzes = localStorage.getItem('quizzes');
-
-        // 2. Study Maker Pro 統合保存用キーを確認
         const savedState = localStorage.getItem('studyMakerProState');
-
         if (savedState) {
             try {
                 const parsed = JSON.parse(savedState);
                 state.tasks = parsed.tasks || [];
                 state.quizzes = parsed.quizzes || [];
+                state.taskHistory = parsed.taskHistory || [];
+                state.quizHistory = parsed.quizHistory || [];
             } catch (e) {
-                console.error("データ解析に失敗しました。個別の読み込みを試みます。");
+                console.error("データ解析に失敗しました。");
             }
-        } else {
-            // 統合キーがない場合、古い個別キーが存在すればデータを移行
-            if (oldTasks) {
-                try {
-                    const parsedTasks = JSON.parse(oldTasks);
-                    // 単純な文字列配列だった場合のオブジェクト変換
-                    state.tasks = parsedTasks.map(t => typeof t === 'string' ? { id: Date.now() + Math.random(), text: t, subject: 'math', completed: false } : t);
-                } catch(e) {}
-            }
-            if (oldQuizzes) {
-                try { state.quizzes = JSON.parse(oldQuizzes); } catch(e) {}
-            }
-            saveData(); // 新形式で即時保存
         }
     }
 
@@ -622,16 +764,17 @@
     function saveData() {
         localStorage.setItem('studyMakerProState', JSON.stringify({
             tasks: state.tasks,
-            quizzes: state.quizzes
+            quizzes: state.quizzes,
+            taskHistory: state.taskHistory,
+            quizHistory: state.quizHistory
         }));
     }
 
-    // モード切り替え（アニメーション付き）
+    // モード切り替え
     function switchMode(mode) {
         if (state.currentMode === mode) return;
         state.currentMode = mode;
 
-        // タブボタンのアクティブ切り替え
         document.querySelectorAll('.mode-btn').forEach(btn => {
             btn.classList.toggle('active', btn.innerText.includes(mode === 'task' ? 'タスク' : 'クイズ'));
         });
@@ -648,7 +791,7 @@
         updateProgress();
     }
 
-    // 滑らかなパネル切り替え用のフェード関数
+    // フェードアニメーション
     function fadeTransition(fadeOutElement, fadeInElement) {
         fadeOutElement.style.opacity = '0';
         fadeOutElement.style.transform = 'translateY(-10px)';
@@ -660,7 +803,6 @@
             fadeInElement.style.display = 'block';
             fadeInElement.classList.add('active');
             
-            // レイアウト確定後にアニメーションをトリガー
             requestAnimationFrame(() => {
                 fadeInElement.style.opacity = '1';
                 fadeInElement.style.transform = 'translateY(0)';
@@ -679,7 +821,7 @@
         renderLists();
     }
 
-    // 記述式と◯✕の解答欄表示切り替え
+    // クイズ解答欄表示切り替え
     function toggleQuizAnswerRow(show) {
         const row = document.getElementById('quizAnswerRow');
         if (show) {
@@ -739,7 +881,7 @@
             if (!answer) return;
             ansInput.value = '';
         } else {
-            answer = 'O'; // ◯✕のデフォルト判定基準(初期はOとする。クイズ側で選択可能)
+            answer = 'O';
         }
 
         const newQuiz = {
@@ -759,17 +901,13 @@
         updateProgress();
     }
 
-    // タスク完了切り替え
+    // タスク完了状態の切り替え（チェックボックスの状態を即座に保持）
     function toggleTask(id, checked) {
         const task = state.tasks.find(t => t.id === id);
         if (task) {
             task.completed = checked;
             saveData();
-            
-            // アニメーション適用のため少し待ってからクラス反映させる仕組み
-            const li = document.getElementById(`item-${id}`);
-            if (li) li.classList.toggle('completed', checked);
-            
+            renderLists();
             updateProgress();
         }
     }
@@ -793,14 +931,16 @@
         feedback.innerText = isCorrect ? '✨ 正解です！素晴らしい！' : '❌ 残念、違います。もう一度考えてみましょう。';
 
         if (isCorrect && !quiz.completed) {
-            quiz.completed = true;
-            saveData();
-            document.getElementById(`item-${id}`).classList.add('completed');
-            updateProgress();
+            setTimeout(() => {
+                quiz.completed = true;
+                saveData();
+                renderLists();
+                updateProgress();
+            }, 600); // 喜びのメッセージを少し見せてから完了状態にする
         }
     }
 
-    // ◯✕クイズの正解設定切り替え (問題作成者がOかXかをトグル変更できるようにする隠し/利便性パッチ)
+    // ◯✕クイズの正解設定切り替え
     function toggleTargetAnswer(id) {
         const quiz = state.quizzes.find(q => q.id === id);
         if (quiz && quiz.type === 'tf') {
@@ -819,7 +959,7 @@
         }
     }
 
-    // 削除処理（フェードアウトアニメーション付き）
+    // 削除処理
     function deleteItem(id, type) {
         const li = document.getElementById(`item-${id}`);
         if (li) {
@@ -838,25 +978,23 @@
         }
     }
 
-    // 完了済みを一括削除
+    // 完了済みを一括削除（チェックの付いているものを履歴に移動）
     function clearCompleted() {
-        if (state.currentMode === 'task') {
-            state.tasks = state.tasks.filter(t => !t.completed);
-        } else {
-            state.quizzes = state.quizzes.filter(q => !q.completed);
-        }
-        saveData();
-        renderLists();
-        updateProgress();
-    }
+        const list = state.currentMode === 'task' ? state.tasks : state.quizzes;
+        const completedItems = list.filter(item => item.completed);
 
-    // すべて初期化
-    function clearAll() {
-        if (confirm('すべてのデータが削除されます。よろしいですか？')) {
+        if (completedItems.length === 0) {
+            alert('完了済みの項目がありません。');
+            return;
+        }
+        
+        if (confirm(`完了済みの項目 ${completedItems.length}件 を履歴に保存して削除しますか？`)) {
             if (state.currentMode === 'task') {
-                state.tasks = [];
+                state.taskHistory.unshift(...completedItems);
+                state.tasks = state.tasks.filter(t => !t.completed);
             } else {
-                state.quizzes = [];
+                state.quizHistory.unshift(...completedItems);
+                state.quizzes = state.quizzes.filter(q => !q.completed);
             }
             saveData();
             renderLists();
@@ -864,11 +1002,115 @@
         }
     }
 
+    // すべて初期化
+    function clearAll() {
+        if (confirm('すべてのデータ（現在のリスト・履歴すべて）が削除されます。よろしいですか？')) {
+            if (state.currentMode === 'task') {
+                state.tasks = [];
+                state.taskHistory = [];
+            } else {
+                state.quizzes = [];
+                state.quizHistory = [];
+            }
+            saveData();
+            renderLists();
+            updateProgress();
+        }
+    }
+
+    // ================= 履歴モーダル関連の処理 =================
+    function openHistoryModal() {
+        renderHistoryList();
+        document.getElementById('historyModal').classList.add('active');
+    }
+
+    function closeHistoryModal() {
+        document.getElementById('historyModal').classList.remove('active');
+    }
+
+    // 履歴リストを描画する（クイズの文の形を修正済み）
+    function renderHistoryList() {
+        const container = document.getElementById('historyListContainer');
+        container.innerHTML = '';
+
+        const historyList = state.currentMode === 'task' ? state.taskHistory : state.quizHistory;
+
+        if (historyList.length === 0) {
+            container.innerHTML = '<div style="text-align: center; color: var(--text-sub); padding: 20px;">完了した履歴はありません</div>';
+            return;
+        }
+
+        historyList.forEach(item => {
+            const subjInfo = subjectMap[item.subject] || subjectMap['other'];
+            const div = document.createElement('div');
+            div.className = `history-item ${subjInfo.class}`;
+            
+            // クイズの場合は先頭に「Q. 」をつける（記述式・◯✕共通で二重にならないようにする）
+            const displayText = item.type ? `Q. ${item.text}` : item.text;
+
+            div.innerHTML = `
+                <div class="history-info">
+                    <span class="subject-badge ${subjInfo.bg}">${subjInfo.name}</span>
+                    <span class="history-text">${displayText}</span>
+                </div>
+                <button class="restore-btn" onclick="restoreItem('${item.id}')">元に戻す</button>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    // 履歴から元のリストに復元する
+    function restoreItem(id) {
+        if (state.currentMode === 'task') {
+            const index = state.taskHistory.findIndex(t => t.id == id);
+            if (index !== -1) {
+                const item = state.taskHistory.splice(index, 1)[0];
+                item.completed = false; // 未完了に戻す
+                state.tasks.push(item);
+            }
+        } else {
+            const index = state.quizHistory.findIndex(q => q.id == id);
+            if (index !== -1) {
+                const item = state.quizHistory.splice(index, 1)[0];
+                item.completed = false; // 未完了に戻す
+                state.quizzes.push(item);
+            }
+        }
+
+        saveData();
+        renderHistoryList(); // モーダル内を再描画
+        renderLists();       // メインリストを再描画
+        updateProgress();
+    }
+
+    // 履歴をすべて消去する
+    function clearAllHistory() {
+        if (confirm('現在のモードの完了履歴をすべて消去しますか？')) {
+            if (state.currentMode === 'task') {
+                state.taskHistory = [];
+            } else {
+                state.quizHistory = [];
+            }
+            saveData();
+            renderHistoryList();
+        }
+    }
+
+    // モーダルの外側をクリックしたら閉じる
+    window.addEventListener('click', (e) => {
+        const modal = document.getElementById('historyModal');
+        if (e.target === modal) {
+            closeHistoryModal();
+        }
+    });
+
     // 進捗率の更新
     function updateProgress() {
         const list = state.currentMode === 'task' ? state.tasks : state.quizzes;
-        const total = list.length;
-        const completed = list.filter(item => item.completed).length;
+        const history = state.currentMode === 'task' ? state.taskHistory : state.quizHistory;
+        
+        const total = list.length + history.length;
+        const completed = history.length + list.filter(item => item.completed).length;
         const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
 
         document.getElementById('progressPercent').innerText = `${percent}%`;
@@ -918,15 +1160,15 @@
                 if (quiz.type === 'text') {
                     interactiveArea = `
                         <div class="quiz-input-area">
-                            <input type="text" id="userAns-${quiz.id}" placeholder="解答を入力してください" onkeypress="if(event.key==='Enter') checkQuizAnswer(${quiz.id})">
-                            <button class="quiz-check-btn" onclick="checkQuizAnswer(${quiz.id})">判定</button>
+                            <input type="text" id="userAns-${quiz.id}" placeholder="解答を入力してください" ${quiz.completed ? 'disabled' : ''} onkeypress="if(event.key==='Enter') checkQuizAnswer(${quiz.id})">
+                            <button class="quiz-check-btn" onclick="checkQuizAnswer(${quiz.id})" ${quiz.completed ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''}>判定</button>
                         </div>
                     `;
                 } else {
                     interactiveArea = `
                         <div class="quiz-tf-buttons">
-                            <button class="tf-btn btn-o" onclick="checkQuizAnswer(${quiz.id}, 'O')">◯</button>
-                            <button class="tf-btn btn-x" onclick="checkQuizAnswer(${quiz.id}, 'X')">✕</button>
+                            <button class="tf-btn btn-o" onclick="checkQuizAnswer(${quiz.id}, 'O')" ${quiz.completed ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''}>◯</button>
+                            <button class="tf-btn btn-x" onclick="checkQuizAnswer(${quiz.id}, 'X')" ${quiz.completed ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''}>✕</button>
                         </div>
                     `;
                 }
@@ -940,7 +1182,62 @@
                         <button class="delete-btn" onclick="deleteItem(${quiz.id}, 'quiz')">✕</button>
                     </div>
                     <div class="quiz-body">
-                        ${quiz.completed ? '<div class="quiz-feedback correct" style="display:block;">✨ この問題は正解済みです</div>' : interactiveArea}
+                        ${quiz.completed ? '<div style="color:var(--success); font-weight:700; font-size:13px;">✨ 正解済みです！</div>' : interactiveArea}
+                        <div class="quiz-feedback" id="feedback-${quiz.id}"></div>
+                        <div class="answer-reveal" onclick="revealAnswer(${quiz.id})">正解を確認する</div>
+                        <div class="revealed-text" id="reveal-${quiz.id}">
+                            正解: <strong>${displayAnswer}</strong> 
+                            ${quiz.type === 'tf' ? `<span id="targetAnsLabel-${quiz.id}" style="font-size:11px;color:var(--text-sub);cursor:pointer;margin-left:5px;" onclick="toggleTargetAnswer(${quiz.id})">(正解設定を切り替える)</span>` : ''}
+                        </div>
+                    </div>
+                `;
+                quizList.innerHTML = ''; // インデント崩れ防止用
+                quizList.appendChild(li);
+            });
+            
+        // 再度ループ部分を修正してクイズの描画を安全に行うための処理
+        renderQuizListItems();
+    }
+
+    // クイズリスト描画用ヘルパー
+    function renderQuizListItems() {
+        const quizList = document.getElementById('quizList');
+        quizList.innerHTML = '';
+        state.quizzes
+            .filter(q => state.currentFilter === 'all' || q.subject === state.currentFilter)
+            .forEach(quiz => {
+                const subjInfo = subjectMap[quiz.subject] || subjectMap['other'];
+                const li = document.createElement('li');
+                li.id = `item-${quiz.id}`;
+                li.className = `${subjInfo.class} ${quiz.completed ? 'completed' : ''}`;
+
+                let interactiveArea = '';
+                if (quiz.type === 'text') {
+                    interactiveArea = `
+                        <div class="quiz-input-area">
+                            <input type="text" id="userAns-${quiz.id}" placeholder="解答を入力してください" ${quiz.completed ? 'disabled' : ''} onkeypress="if(event.key==='Enter') checkQuizAnswer(${quiz.id})">
+                            <button class="quiz-check-btn" onclick="checkQuizAnswer(${quiz.id})" ${quiz.completed ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''}>判定</button>
+                        </div>
+                    `;
+                } else {
+                    interactiveArea = `
+                        <div class="quiz-tf-buttons">
+                            <button class="tf-btn btn-o" onclick="checkQuizAnswer(${quiz.id}, 'O')" ${quiz.completed ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''}>◯</button>
+                            <button class="tf-btn btn-x" onclick="checkQuizAnswer(${quiz.id}, 'X')" ${quiz.completed ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''}>✕</button>
+                        </div>
+                    `;
+                }
+
+                const displayAnswer = quiz.type === 'tf' ? (quiz.answer === 'O' ? '◯' : '✕') : quiz.answer;
+
+                li.innerHTML = `
+                    <div class="list-main-row">
+                        <span class="task-text" style="font-weight:600;">Q. ${quiz.text}</span>
+                        <span class="subject-badge ${subjInfo.bg}">${subjInfo.name}</span>
+                        <button class="delete-btn" onclick="deleteItem(${quiz.id}, 'quiz')">✕</button>
+                    </div>
+                    <div class="quiz-body">
+                        ${quiz.completed ? '<div style="color:var(--success); font-weight:700; font-size:13px;">✨ 正解済みです！</div>' : interactiveArea}
                         <div class="quiz-feedback" id="feedback-${quiz.id}"></div>
                         <div class="answer-reveal" onclick="revealAnswer(${quiz.id})">正解を確認する</div>
                         <div class="revealed-text" id="reveal-${quiz.id}">
