@@ -8,41 +8,46 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
-            --card-bg: #ffffff;
+            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            --primary: #3498db;
+            --primary-hover: #2980b9;
+            --success: #2ecc71;
+            --danger: #e74c3c;
             --text-main: #2c3e50;
             --text-sub: #7f8c8d;
-            --border-color: #e2e8f0;
             
             /* 教科別カラー */
             --color-all: #34495e;
-            --color-math: #3498db;
-            --color-japanese: #e74c3c;
-            --color-english: #2ecc71;
-            --color-science: #9b59b6;
-            --color-social: #f39c12;
-            --color-other: #1abc9c;
+            --color-math: #e74c3c;
+            --color-lang: #e67e22;
+            --color-eng: #3498db;
+            --color-sci: #2ecc71;
+            --color-soc: #9b59b6;
+            --color-other: #95a5a6;
         }
 
         body {
             font-family: 'Inter', 'Noto Sans JP', sans-serif;
             background: var(--bg-gradient);
+            min-height: 100vh;
             color: var(--text-main);
             margin: 0;
             padding: 40px 20px;
             display: flex;
             justify-content: center;
-            min-height: 100vh;
+            align-items: flex-start;
             box-sizing: border-box;
         }
 
         .container {
             width: 100%;
-            max-width: 650px;
-            background: var(--card-bg);
-            padding: 35px;
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 30px;
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(166, 173, 201, 0.25);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            animation: fadeIn 0.6s ease-out;
         }
 
         h1 {
@@ -50,390 +55,385 @@
             text-align: center;
             color: var(--text-main);
             margin-top: 0;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             font-weight: 700;
-            letter-spacing: -0.5px;
         }
 
         /* モード切り替えタブ */
         .mode-tabs {
             display: flex;
-            gap: 10px;
-            margin-bottom: 25px;
-            background: #f1f5f9;
-            padding: 6px;
+            background: #eee;
+            padding: 4px;
             border-radius: 12px;
+            margin-bottom: 25px;
+            position: relative;
         }
 
-        .mode-tab {
+        .mode-btn {
             flex: 1;
-            padding: 10px;
+            background: none;
             border: none;
-            background: transparent;
-            font-size: 14px;
+            padding: 12px;
+            font-size: 15px;
             font-weight: 600;
             color: var(--text-sub);
             cursor: pointer;
             border-radius: 8px;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
+            z-index: 1;
         }
 
-        .mode-tab.active {
+        .mode-btn.active {
+            color: var(--primary);
             background: white;
-            color: var(--text-main);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
 
-        /* 進捗セクション */
+        /* 達成率セクション */
         .progress-container {
-            background: #f8fafc;
+            background: #f8f9fa;
             padding: 15px 20px;
             border-radius: 12px;
             margin-bottom: 25px;
-            border: 1px solid var(--border-color);
+            border: 1px solid #eef2f5;
         }
 
-        .progress-header {
+        .progress-label {
             display: flex;
             justify-content: space-between;
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-sub);
+            font-size: 14px;
+            font-weight: 500;
             margin-bottom: 8px;
+            color: var(--text-main);
         }
 
         .progress-bar-bg {
-            background: #e2e8f0;
-            height: 8px;
-            border-radius: 4px;
+            background: #eef2f5;
+            height: 10px;
+            border-radius: 5px;
             overflow: hidden;
         }
 
-        .progress-bar-fill {
-            height: 100%;
+        .progress-bar {
             background: linear-gradient(90deg, #3498db, #2ecc71);
+            height: 100%;
             width: 0%;
-            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* 付箋風教科選択 */
-        .subject-sticky-notes {
+        /* 教科付箋タブ */
+        .subject-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 25px;
+            justify-content: center;
+        }
+
+        .subject-tab {
+            border: none;
+            background: white;
+            padding: 10px 14px;
+            font-size: 13px;
+            font-weight: 500;
+            border-radius: 6px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            top: 0;
+            border-bottom: 3px solid var(--text-sub);
+        }
+
+        .subject-tab:hover {
+            top: -4px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+
+        .subject-tab.active {
+            top: -2px;
+            color: white;
+            border-bottom-width: 0px;
+            padding-bottom: 13px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        /* 付箋カラー割り当て */
+        .tab-all { border-bottom-color: var(--color-all); }
+        .tab-all.active { background: var(--color-all); }
+        .tab-math { border-bottom-color: var(--color-math); }
+        .tab-math.active { background: var(--color-math); }
+        .tab-lang { border-bottom-color: var(--color-lang); }
+        .tab-lang.active { background: var(--color-lang); }
+        .tab-eng { border-bottom-color: var(--color-eng); }
+        .tab-eng.active { background: var(--color-eng); }
+        .tab-sci { border-bottom-color: var(--color-sci); }
+        .tab-sci.active { background: var(--color-sci); }
+        .tab-soc { border-bottom-color: var(--color-soc); }
+        .tab-soc.active { background: var(--color-soc); }
+        .tab-other { border-bottom-color: var(--color-other); }
+        .tab-other.active { background: var(--color-other); }
+
+        /* パネル切り替えアニメーション */
+        .view-panel {
+            display: none;
+            opacity: 0;
+            transform: translateY(15px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .view-panel.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 入力グループ */
+        .input-group {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
             margin-bottom: 25px;
-        }
-
-        .sticky-note {
-            padding: 10px 16px;
-            border: none;
-            border-radius: 4px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.06);
-            position: relative;
-            top: 0;
-        }
-
-        .sticky-note:hover {
-            top: -3px;
-            box-shadow: 2px 5px 10px rgba(0,0,0,0.1);
-        }
-
-        .sticky-note.active {
-            top: 2px;
-            box-shadow: inset 1px 1px 3px rgba(0,0,0,0.15);
-            font-weight: 700;
-        }
-
-        /* 各教科の配色 */
-        .note-all { background: #e2e8f0; color: #334155; }
-        .note-math { background: #e0f2fe; color: #0369a1; border-bottom: 3px solid #3498db; }
-        .note-japanese { background: #fee2e2; color: #b91c1c; border-bottom: 3px solid #e74c3c; }
-        .note-english { background: #dcfce7; color: #15803d; border-bottom: 3px solid #2ecc71; }
-        .note-science { background: #f3e8ff; color: #6b21a8; border-bottom: 3px solid #9b59b6; }
-        .note-social { background: #fef3c7; color: #b45309; border-bottom: 3px solid #f39c12; }
-        .note-other { background: #ccfbf1; color: #0f766e; border-bottom: 3px solid #1abc9c; }
-
-        /* 入力エリア */
-        .input-box {
-            display: none;
-            background: #f8fafc;
-            padding: 20px;
+            background: #f8f9fa;
+            padding: 15px;
             border-radius: 12px;
-            border: 1px solid var(--border-color);
-            margin-bottom: 25px;
-        }
-
-        .input-box.active {
-            display: block;
-        }
-
-        .form-group {
-            margin-bottom: 12px;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-sub);
-            margin-bottom: 4px;
+            border: 1px solid #eef2f5;
         }
 
         .input-row {
             display: flex;
+            width: 100%;
             gap: 10px;
         }
 
-        input[type="text"], select, textarea {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid var(--border-color);
+        input[type="text"], select {
+            padding: 12px;
+            border: 1px solid #ddd;
             border-radius: 8px;
             font-size: 14px;
-            box-sizing: border-box;
             font-family: inherit;
-        }
-
-        textarea {
-            resize: vertical;
-            height: 60px;
-        }
-
-        input:focus, select:focus, textarea:focus {
             outline: none;
-            border-color: #3498db;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+            background: white;
+            transition: border-color 0.2s;
         }
 
-        .primary-btn {
-            padding: 10px 20px;
-            background-color: #34495e;
+        input[type="text"]:focus, select:focus {
+            border-color: var(--primary);
+        }
+
+        input[type="text"] { flex: 1; }
+        select { min-width: 100px; }
+
+        .quiz-type-select {
+            display: flex;
+            gap: 15px;
+            width: 100%;
+            margin-top: 5px;
+            font-size: 14px;
+            align-items: center;
+        }
+
+        .quiz-type-select label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .quiz-answer-row {
+            display: flex;
+            width: 100%;
+            gap: 10px;
+            margin-top: 5px;
+            transition: all 0.3s ease;
+        }
+
+        button.main-btn {
+            padding: 12px 20px;
+            background-color: var(--primary);
             color: white;
             border: none;
             border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
             font-size: 14px;
-            white-space: nowrap;
-            transition: background 0.2s;
+            font-family: inherit;
+            transition: background 0.2s, transform 0.1s;
         }
 
-        .primary-btn:hover {
-            background-color: #2c3e50;
-        }
-
-        /* フィルタータブ（表示切り替え用） */
-        .view-filter-tabs {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 15px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 10px;
-        }
-
-        .filter-tab {
-            background: none;
-            border: none;
-            font-size: 13px;
-            color: var(--text-sub);
-            cursor: pointer;
-            padding: 4px 8px;
-            font-weight: 500;
-        }
-
-        .filter-tab.active {
-            color: var(--text-main);
-            font-weight: 700;
-            border-bottom: 2px solid var(--text-main);
-        }
+        button.main-btn:hover { background-color: var(--primary-hover); }
+        button.main-btn:active { transform: scale(0.98); }
 
         /* リストスタイル */
-        .item-list {
+        ul {
             list-style: none;
             padding: 0;
             margin: 0;
         }
 
-        .list-item {
-            background: #f8fafc;
-            padding: 16px;
-            border-radius: 10px;
-            margin-bottom: 10px;
-            border-left: 5px solid #cbd5e1;
+        li {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
-            transition: all 0.3s ease;
-        }
-
-        /* 教科ごとの左ボーダー */
-        .item-math { border-left-color: var(--color-math); }
-        .item-japanese { border-left-color: var(--color-japanese); }
-        .item-english { border-left-color: var(--color-english); }
-        .item-science { border-left-color: var(--color-science); }
-        .item-social { border-left-color: var(--color-social); }
-        .item-other { border-left-color: var(--color-other); }
-
-        .item-main-row {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-        }
-
-        .item-checkbox {
-            margin-top: 4px;
-            transform: scale(1.2);
-            cursor: pointer;
-        }
-
-        .item-content {
-            flex: 1;
-            font-size: 15px;
-            line-height: 1.5;
-        }
-
-        .item-tag {
-            display: inline-block;
-            font-size: 11px;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-weight: 600;
-            margin-right: 6px;
-        }
-
-        /* クイズ部分のスタイル */
-        .quiz-container {
+            padding: 16px;
             background: white;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 12px;
-            margin-top: 5px;
+            margin-bottom: 12px;
+            border-radius: 10px;
+            border-left: 5px solid var(--primary);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: slideIn 0.3s ease-out;
+            position: relative;
+            overflow: hidden;
         }
 
-        .quiz-type-badge {
-            font-size: 11px;
-            color: #7f8c8d;
-            margin-bottom: 6px;
-            font-weight: 500;
+        li.completed {
+            background: #f8f9fa;
+            border-left-color: var(--success) !important;
+            opacity: 0.75;
         }
 
-        .answer-input-group {
-            display: flex;
-            gap: 8px;
-            margin-top: 8px;
+        li.completed .task-text {
+            text-decoration: line-through;
+            color: var(--text-sub);
         }
 
-        .ox-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 8px;
-        }
-
-        .ox-btn {
-            flex: 1;
-            padding: 8px;
-            border: 1px solid var(--border-color);
-            background: white;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 14px;
-            transition: all 0.2s;
-        }
-
-        .ox-btn:hover {
-            background: #f1f5f9;
-        }
-
-        .ox-btn.selected-o {
-            background: #fee2e2;
-            border-color: #e74c3c;
-            color: #b91c1c;
-        }
-
-        .ox-btn.selected-x {
-            background: #e0f2fe;
-            border-color: #3498db;
-            color: #0369a1;
-        }
-
-        .result-message {
-            margin-top: 8px;
-            font-size: 13px;
-            font-weight: 700;
+        .list-main-row {
             display: flex;
             align-items: center;
-            gap: 4px;
+            width: 100%;
         }
 
-        .result-correct { color: #2ecc71; }
-        .result-incorrect { color: #e74c3c; }
-
-        .show-answer-btn {
-            background: none;
-            border: none;
-            color: #3498db;
-            font-size: 12px;
+        li input[type="checkbox"] {
+            margin-right: 14px;
+            transform: scale(1.2);
             cursor: pointer;
-            padding: 0;
-            font-weight: 600;
-            margin-top: 6px;
-            text-decoration: underline;
+            accent-color: var(--success);
         }
 
-        .answer-reveal {
-            margin-top: 6px;
-            font-size: 13px;
-            background: #f1f5f9;
-            padding: 8px;
-            border-radius: 6px;
+        .task-text {
+            font-size: 15px;
             font-weight: 500;
+            word-break: break-all;
+        }
+
+        .subject-badge {
+            margin-left: auto;
+            margin-right: 15px;
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            color: white;
+            font-weight: 700;
         }
 
         .delete-btn {
             background: none;
             border: none;
-            color: #94a3b8;
+            color: #bdc3c7;
             cursor: pointer;
             font-size: 16px;
-            padding: 0 4px;
-            transition: color 0.2s;
+            padding: 4px;
+            transition: color 0.2s, transform 0.2s;
         }
 
         .delete-btn:hover {
-            color: #e74c3c;
+            color: var(--danger);
+            transform: scale(1.1);
         }
 
-        /* 完了状態のスタイル */
-        .list-item.completed {
-            background: #f1f5f9;
-            opacity: 0.6;
-        }
-        .list-item.completed .item-content {
-            text-decoration: line-through;
-            color: #94a3b8;
+        /* クイズ詳細エリア */
+        .quiz-body {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px dashed #edf2f7;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
 
-        /* 管理用ボタン */
-        .control-panel {
+        .quiz-input-area {
+            display: flex;
+            gap: 8px;
+        }
+
+        .quiz-check-btn {
+            padding: 8px 14px;
+            background: #34495e;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .quiz-check-btn:hover { background: #2c3e50; }
+
+        .quiz-tf-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .tf-btn {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .tf-btn.btn-o:hover { background: #edfdf5; border-color: var(--success); color: var(--success); }
+        .tf-btn.btn-x:hover { background: #fff5f5; border-color: var(--danger); color: var(--danger); }
+
+        .quiz-feedback {
+            font-size: 13px;
+            font-weight: 700;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .quiz-feedback.correct { color: var(--success); display: block; }
+        .quiz-feedback.incorrect { color: var(--danger); display: block; }
+
+        .answer-reveal {
+            font-size: 12px;
+            color: var(--text-sub);
+            cursor: pointer;
+            text-decoration: underline;
+            align-self: flex-start;
+        }
+
+        .revealed-text {
+            font-size: 13px;
+            background: #fff9db;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-weight: 500;
+            display: none;
+        }
+
+        /* 管理ボタン */
+        .control-buttons {
             display: flex;
             justify-content: flex-end;
             gap: 10px;
-            margin-top: 20px;
+            margin-top: 25px;
+            border-top: 1px solid #eef2f5;
+            padding-top: 20px;
         }
 
         .danger-btn {
             background: none;
-            border: 1px solid #cbd5e1;
-            color: #64748b;
-            padding: 6px 12px;
+            border: 1px solid #ddd;
+            padding: 8px 14px;
             border-radius: 6px;
             font-size: 12px;
+            color: var(--text-sub);
             cursor: pointer;
             font-weight: 500;
             transition: all 0.2s;
@@ -441,418 +441,523 @@
 
         .danger-btn:hover {
             background: #fff5f5;
-            border-color: #fca5a5;
-            color: #ef4444;
+            border-color: var(--danger);
+            color: var(--danger);
         }
+
+        /* アニメーションキーフレーム */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 各教科の左線・バッジ用カラー */
+        li.subj-math { border-left-color: var(--color-math); }
+        li.subj-lang { border-left-color: var(--color-lang); }
+        li.subj-eng { border-left-color: var(--color-eng); }
+        li.subj-sci { border-left-color: var(--color-sci); }
+        li.subj-soc { border-left-color: var(--color-soc); }
+        li.subj-other { border-left-color: var(--color-other); }
+
+        .bg-math { background-color: var(--color-math); }
+        .bg-lang { background-color: var(--color-lang); }
+        .bg-eng { background-color: var(--color-eng); }
+        .bg-sci { background-color: var(--color-sci); }
+        .bg-soc { background-color: var(--color-soc); }
+        .bg-other { background-color: var(--color-other); }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>📝 期末テスト対策 Study Maker Pro</h1>
-
+    
     <!-- モード切り替えタブ -->
     <div class="mode-tabs">
-        <button class="mode-tab active" onclick="switchMode('task')">タスク管理モード</button>
-        <button class="mode-tab" onclick="switchMode('quiz')">自作クイズモード</button>
+        <button class="mode-btn active" onclick="switchMode('task')">タスク管理モード</button>
+        <button class="mode-btn" onclick="switchMode('quiz')">自作クイズモード</button>
     </div>
 
-    <!-- 進捗状況の可視化 -->
+    <!-- 進捗バー -->
     <div class="progress-container">
-        <div class="progress-header">
-            <span id="progressLabel">現在の達成率</span>
+        <div class="progress-label">
+            <span id="progressText">現在の達成率</span>
             <span id="progressPercent">0%</span>
         </div>
         <div class="progress-bar-bg">
-            <div id="progressBar" class="progress-bar-fill"></div>
+            <div class="progress-bar" id="progressBar"></div>
         </div>
     </div>
 
-    <!-- 教科選択用付箋タブ -->
-    <div class="subject-sticky-notes">
-        <button class="sticky-note note-all active" onclick="filterSubject('all')">すべて</button>
-        <button class="sticky-note note-math" onclick="filterSubject('数学')">数学</button>
-        <button class="sticky-note note-japanese" onclick="filterSubject('国語')">国語</button>
-        <button class="sticky-note note-english" onclick="filterSubject('英語')">英語</button>
-        <button class="sticky-note note-science" onclick="filterSubject('理科')">理科</button>
-        <button class="sticky-note note-social" onclick="filterSubject('社会')">社会</button>
-        <button class="sticky-note note-other" onclick="filterSubject('その他')">その他</button>
+    <!-- 教科別付箋タブ -->
+    <div class="subject-tabs" id="subjectTabContainer">
+        <!-- JSで動的に構築、または静的に設置 -->
+        <button class="subject-tab tab-all active" onclick="filterSubject('all')">すべて</button>
+        <button class="subject-tab tab-math" onclick="filterSubject('math')">数学</button>
+        <button class="subject-tab tab-lang" onclick="filterSubject('lang')">国語</button>
+        <button class="subject-tab tab-eng" onclick="filterSubject('eng')">英語</button>
+        <button class="subject-tab tab-sci" onclick="filterSubject('sci')">理科</button>
+        <button class="subject-tab tab-soc" onclick="filterSubject('soc')">社会</button>
+        <button class="subject-tab tab-other" onclick="filterSubject('other')">その他</button>
     </div>
 
-    <!-- タスク入力エリア -->
-    <div id="taskInputBox" class="input-box active">
-        <div class="input-row">
-            <select id="taskSubject" style="width: 100px;">
-                <option value="数学">数学</option>
-                <option value="国語">国語</option>
-                <option value="英語">英語</option>
-                <option value="理科">理科</option>
-                <option value="社会">社会</option>
-                <option value="その他">その他</option>
-            </select>
-            <input type="text" id="taskInput" placeholder="例：ワーク P.20-25を解く" onkeypress="handleKeyPress(event, 'task')">
-            <button class="primary-btn" onclick="addItem('task')">追加</button>
-        </div>
-    </div>
-
-    <!-- クイズ入力エリア -->
-    <div id="quizInputBox" class="input-box">
-        <div class="form-group">
+    <!-- ================= タスク管理パネル ================= -->
+    <div id="taskPanel" class="view-panel active">
+        <div class="input-group">
             <div class="input-row">
-                <select id="quizSubject" style="width: 100px;">
-                    <option value="数学">数学</option>
-                    <option value="国語">国語</option>
-                    <option value="英語">英語</option>
-                    <option value="理科">理科</option>
-                    <option value="社会">社会</option>
-                    <option value="その他">その他</option>
+                <select id="taskSubject">
+                    <option value="math">数学</option>
+                    <option value="lang">国語</option>
+                    <option value="eng">英語</option>
+                    <option value="sci">理科</option>
+                    <option value="soc">社会</option>
+                    <option value="other">その他</option>
                 </select>
-                <select id="quizType" style="width: 130px;" onchange="toggleQuizTypeInput()">
-                    <option value="text">記述式クイズ</option>
-                    <option value="ox">◯✕クイズ</option>
-                </select>
+                <input type="text" id="taskInput" placeholder="例：数学ワーク P.20-25 を解く" onkeypress="handleKeyPress(event, 'task')">
+                <button class="main-btn" onclick="addTask()">追加</button>
             </div>
         </div>
-        <div class="form-group">
-            <label>問題文</label>
-            <textarea id="quizQuestion" placeholder="例：日本の首都は？ / 平安京に遷都した天皇は？"></textarea>
-        </div>
-        <div class="form-group" id="quizAnswerRow">
-            <label>正しい解答</label>
-            <input type="text" id="quizAnswer" placeholder="例：東京 / 桓武天皇">
-        </div>
-        <div class="form-group" id="quizOxRow" style="display: none;">
-            <label>正しい解答を選択</label>
-            <select id="quizOxAnswer">
-                <option value="O">◯ (正しい)</option>
-                <option value="X">✕ (誤り)</option>
-            </select>
-        </div>
-        <div style="text-align: right;">
-            <button class="primary-btn" onclick="addItem('quiz')">クイズを作成</button>
-        </div>
+        <ul id="taskList"></ul>
     </div>
 
-    <!-- 表示切替フィルタ -->
-    <div class="view-filter-tabs">
-        <button class="filter-tab active" onclick="filterView('all')">すべての項目</button>
-        <button class="filter-tab" onclick="filterView('uncompleted')">未完了のみ</button>
-        <button class="filter-tab" onclick="filterView('completed')">完了済みのみ</button>
+    <!-- ================= 自作クイズパネル ================= -->
+    <div id="quizPanel" class="view-panel">
+        <div class="input-group">
+            <div class="input-row">
+                <select id="quizSubject">
+                    <option value="math">数学</option>
+                    <option value="lang">国語</option>
+                    <option value="eng">英語</option>
+                    <option value="sci">理科</option>
+                    <option value="soc">社会</option>
+                    <option value="other">その他</option>
+                </select>
+                <input type="text" id="quizInput" placeholder="問題文を入力してください" onkeypress="handleKeyPress(event, 'quiz')">
+            </div>
+            <div class="quiz-type-select">
+                <label><input type="radio" name="quizType" value="text" checked onclick="toggleQuizAnswerRow(true)"> 記述式問題</label>
+                <label><input type="radio" name="quizType" value="tf" onclick="toggleQuizAnswerRow(false)"> ◯✕問題</label>
+            </div>
+            <div class="quiz-answer-row" id="quizAnswerRow">
+                <input type="text" id="quizAnswerInput" placeholder="正解を入力してください">
+            </div>
+            <div class="input-row" style="margin-top: 5px; justify-content: flex-end;">
+                <button class="main-btn" onclick="addQuiz()">問題を追加</button>
+            </div>
+        </div>
+        <ul id="quizList"></ul>
     </div>
 
-    <!-- リスト本体 -->
-    <ul id="itemList" class="item-list"></ul>
-
-    <!-- 管理パネル -->
-    <div class="control-panel">
+    <!-- 管理用ボタン -->
+    <div class="control-buttons">
         <button class="danger-btn" onclick="clearCompleted()">完了済みを削除</button>
         <button class="danger-btn" onclick="clearAll()">すべて初期化</button>
     </div>
 </div>
 
 <script>
-    let items = [];
-    currentMode = 'task';
-    selectedSubject = 'all';
-    selectedView = 'all';
-
-    // 起動時にLocalStorageからデータを読み込み
-    window.onload = function() {
-        const savedData = localStorage.getItem('studyMakerProData');
-        if (savedData) {
-            items = JSON.parse(savedData);
-        }
-        render();
+    // 状態管理
+    let state = {
+        currentMode: 'task',      // 'task' or 'quiz'
+        currentFilter: 'all',    // 'all', 'math', etc.
+        tasks: [],
+        quizzes: []
     };
 
+    // 教科の日本語名とデザイン用マップ
+    const subjectMap = {
+        math: { name: '数学', class: 'subj-math', bg: 'bg-math' },
+        lang: { name: '国語', class: 'subj-lang', bg: 'bg-lang' },
+        eng: { name: '英語', class: 'subj-eng', bg: 'bg-eng' },
+        sci: { name: '理科', class: 'subj-sci', bg: 'bg-sci' },
+        soc: { name: '社会', class: 'subj-soc', bg: 'bg-soc' },
+        other: { name: 'その他', class: 'subj-other', bg: 'bg-other' }
+    };
+
+    // 初期起動時の処理
+    window.addEventListener('DOMContentLoaded', () => {
+        loadData();
+        render();
+    });
+
+    // データの読み込み (旧データ構造と新データ構造の互換性を確保)
+    function loadData() {
+        // 1. 旧形式（前回のコード等）のデータを引き継ぐ救済措置
+        const oldTasks = localStorage.getItem('tasks');
+        const oldQuizzes = localStorage.getItem('quizzes');
+
+        // 2. Study Maker Pro 統合保存用キーを確認
+        const savedState = localStorage.getItem('studyMakerProState');
+
+        if (savedState) {
+            try {
+                const parsed = JSON.parse(savedState);
+                state.tasks = parsed.tasks || [];
+                state.quizzes = parsed.quizzes || [];
+            } catch (e) {
+                console.error("データ解析に失敗しました。個別の読み込みを試みます。");
+            }
+        } else {
+            // 統合キーがない場合、古い個別キーが存在すればデータを移行
+            if (oldTasks) {
+                try {
+                    const parsedTasks = JSON.parse(oldTasks);
+                    // 単純な文字列配列だった場合のオブジェクト変換
+                    state.tasks = parsedTasks.map(t => typeof t === 'string' ? { id: Date.now() + Math.random(), text: t, subject: 'math', completed: false } : t);
+                } catch(e) {}
+            }
+            if (oldQuizzes) {
+                try { state.quizzes = JSON.parse(oldQuizzes); } catch(e) {}
+            }
+            saveData(); // 新形式で即時保存
+        }
+    }
+
+    // データの保存
     function saveData() {
-        localStorage.setItem('studyMakerProData', JSON.stringify(items));
+        localStorage.setItem('studyMakerProState', JSON.stringify({
+            tasks: state.tasks,
+            quizzes: state.quizzes
+        }));
     }
 
+    // モード切り替え（アニメーション付き）
     function switchMode(mode) {
-        currentMode = mode;
-        document.querySelectorAll('.mode-tab').forEach(tab => tab.classList.remove('active'));
-        if(mode === 'task') {
-            document.querySelectorAll('.mode-tab')[0].classList.add('active');
-            document.getElementById('taskInputBox').classList.add('active');
-            document.getElementById('quizInputBox').classList.remove('active');
+        if (state.currentMode === mode) return;
+        state.currentMode = mode;
+
+        // タブボタンのアクティブ切り替え
+        document.querySelectorAll('.mode-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.innerText.includes(mode === 'task' ? 'タスク' : 'クイズ'));
+        });
+
+        const taskPanel = document.getElementById('taskPanel');
+        const quizPanel = document.getElementById('quizPanel');
+
+        if (mode === 'task') {
+            fadeTransition(quizPanel, taskPanel);
         } else {
-            document.querySelectorAll('.mode-tab')[1].classList.add('active');
-            document.getElementById('taskInputBox').classList.remove('active');
-            document.getElementById('quizInputBox').classList.add('active');
+            fadeTransition(taskPanel, quizPanel);
         }
-        render();
+
+        updateProgress();
     }
 
-    function toggleQuizTypeInput() {
-        const type = document.getElementById('quizType').value;
-        if(type === 'text') {
-            document.getElementById('quizAnswerRow').style.display = 'block';
-            document.getElementById('quizOxRow').style.display = 'none';
-        } else {
-            document.getElementById('quizAnswerRow').style.display = 'none';
-            document.getElementById('quizOxRow').style.display = 'block';
-        }
+    // 滑らかなパネル切り替え用のフェード関数
+    function fadeTransition(fadeOutElement, fadeInElement) {
+        fadeOutElement.style.opacity = '0';
+        fadeOutElement.style.transform = 'translateY(-10px)';
+        
+        setTimeout(() => {
+            fadeOutElement.classList.remove('active');
+            fadeOutElement.style.display = 'none';
+            
+            fadeInElement.style.display = 'block';
+            fadeInElement.classList.add('active');
+            
+            // レイアウト確定後にアニメーションをトリガー
+            requestAnimationFrame(() => {
+                fadeInElement.style.opacity = '1';
+                fadeInElement.style.transform = 'translateY(0)';
+            });
+        }, 300);
     }
 
+    // 教科フィルター切り替え
     function filterSubject(subject) {
-        selectedSubject = subject;
-        document.querySelectorAll('.sticky-note').forEach(btn => btn.classList.remove('active'));
+        state.currentFilter = subject;
         
-        const indexMap = { 'all': 0, '数学': 1, '国語': 2, '英語': 3, '理科': 4, '社会': 5, 'その他': 6 };
-        document.querySelectorAll('.sticky-note')[indexMap[subject]].classList.add('active');
-        
-        render();
+        document.querySelectorAll('.subject-tab').forEach(tab => {
+            tab.classList.toggle('active', tab.onclick.toString().includes(`'${subject}'`));
+        });
+
+        renderLists();
     }
 
-    function filterView(view) {
-        selectedView = view;
-        document.querySelectorAll('.filter-tab').forEach(tab => tab.classList.remove('active'));
-        const tabs = document.querySelectorAll('.filter-tab');
-        if(view === 'all') tabs[0].classList.add('active');
-        if(view === 'uncompleted') tabs[1].classList.add('active');
-        if(view === 'completed') tabs[2].classList.add('active');
-        render();
+    // 記述式と◯✕の解答欄表示切り替え
+    function toggleQuizAnswerRow(show) {
+        const row = document.getElementById('quizAnswerRow');
+        if (show) {
+            row.style.display = 'flex';
+            requestAnimationFrame(() => { row.style.opacity = '1'; row.style.transform = 'scaleY(1)'; });
+        } else {
+            row.style.opacity = '0';
+            row.style.transform = 'scaleY(0)';
+            setTimeout(() => { row.style.display = 'none'; }, 200);
+        }
     }
 
+    // エンターキーハンドラ
     function handleKeyPress(event, type) {
         if (event.key === 'Enter') {
-            addItem(type);
+            if (type === 'task') addTask();
+            if (type === 'quiz') addQuiz();
         }
     }
 
-    function addItem(type) {
-        if (type === 'task') {
-            const input = document.getElementById('taskInput');
-            const text = input.value.trim();
-            const subject = document.getElementById('taskSubject').value;
-            if (!text) return;
+    // タスク追加
+    function addTask() {
+        const input = document.getElementById('taskInput');
+        const subject = document.getElementById('taskSubject').value;
+        const text = input.value.trim();
 
-            items.push({
-                id: Date.now(),
-                type: 'task',
-                subject: subject,
-                content: text,
-                completed: false
-            });
-            input.value = '';
-        } else if (type === 'quiz') {
-            const question = document.getElementById('quizQuestion').value.trim();
-            const subject = document.getElementById('quizSubject').value;
-            const quizType = document.getElementById('quizType').value;
-            if (!question) return;
+        if (!text) return;
 
-            let answer = '';
-            if (quizType === 'text') {
-                answer = document.getElementById('quizAnswer').value.trim();
-                if (!answer) return;
-            } else {
-                answer = document.getElementById('quizOxAnswer').value;
-            }
+        const newTask = {
+            id: Date.now() + Math.random(),
+            text: text,
+            subject: subject,
+            completed: false
+        };
 
-            items.push({
-                id: Date.now(),
-                type: 'quiz',
-                quizType: quizType,
-                subject: subject,
-                content: question,
-                answer: answer,
-                completed: false,
-                userAnswer: null, // 解答状態の保持
-                isCorrect: null
-            });
-
-            document.getElementById('quizQuestion').value = '';
-            document.getElementById('quizAnswer').value = '';
-        }
-
+        state.tasks.push(newTask);
         saveData();
-        render();
+        input.value = '';
+        
+        renderLists();
+        updateProgress();
     }
 
-    function toggleItem(id) {
-        const item = items.find(i => i.id === id);
-        if (item) {
-            item.completed = !item.completed;
-            saveData();
-            render();
-        }
-    }
+    // クイズ追加
+    function addQuiz() {
+        const input = document.getElementById('quizInput');
+        const subject = document.getElementById('quizSubject').value;
+        const type = document.querySelector('input[name="quizType"]:checked').value;
+        const text = input.value.trim();
+        
+        if (!text) return;
 
-    function deleteItem(id) {
-        items = items.filter(i => i.id !== id);
-        saveData();
-        render();
-    }
-
-    function checkQuizAnswer(id, type) {
-        const item = items.find(i => i.id === id);
-        if (!item) return;
-
+        let answer = '';
         if (type === 'text') {
-            const userAns = document.getElementById(`ans-input-${id}`).value.trim();
-            if(!userAns) return;
-            item.userAnswer = userAns;
-            item.isCorrect = (userAns.toLowerCase() === item.answer.toLowerCase());
-        } else if (type === 'ox-o' || type === 'ox-x') {
-            const selected = (type === 'ox-o') ? 'O' : 'X';
-            item.userAnswer = selected;
-            item.isCorrect = (selected === item.answer);
-        }
-
-        if(item.isCorrect) {
-            item.completed = true;
-        }
-
-        saveData();
-        render();
-    }
-
-    function toggleRevealAnswer(id) {
-        const element = document.getElementById(`reveal-${id}`);
-        if(element.style.display === 'none') {
-            element.style.display = 'block';
+            const ansInput = document.getElementById('quizAnswerInput');
+            answer = ansInput.value.trim();
+            if (!answer) return;
+            ansInput.value = '';
         } else {
-            element.style.display = 'none';
+            answer = 'O'; // ◯✕のデフォルト判定基準(初期はOとする。クイズ側で選択可能)
         }
-    }
 
-    function clearCompleted() {
-        items = items.filter(i => !i.completed);
+        const newQuiz = {
+            id: Date.now() + Math.random(),
+            text: text,
+            subject: subject,
+            type: type,
+            answer: answer,
+            completed: false
+        };
+
+        state.quizzes.push(newQuiz);
         saveData();
-        render();
+        input.value = '';
+
+        renderLists();
+        updateProgress();
     }
 
-    function clearAll() {
-        if(confirm('すべての学習データをリセットしますか？')) {
-            items = [];
+    // タスク完了切り替え
+    function toggleTask(id, checked) {
+        const task = state.tasks.find(t => t.id === id);
+        if (task) {
+            task.completed = checked;
             saveData();
-            render();
+            
+            // アニメーション適用のため少し待ってからクラス反映させる仕組み
+            const li = document.getElementById(`item-${id}`);
+            if (li) li.classList.toggle('completed', checked);
+            
+            updateProgress();
         }
     }
 
-    function render() {
-        const listEl = document.getElementById('itemList');
-        listEl.innerHTML = '';
+    // クイズ回答判定
+    function checkQuizAnswer(id, userAns) {
+        const quiz = state.quizzes.find(q => q.id === id);
+        if (!quiz) return;
 
-        // 現在のモードと教科、表示状態に基づいてフィルタリング
-        let filtered = items.filter(item => item.type === currentMode);
-        
-        if (selectedSubject !== 'all') {
-            filtered = filtered.filter(item => item.subject === selectedSubject);
+        const feedback = document.getElementById(`feedback-${id}`);
+        let isCorrect = false;
+
+        if (quiz.type === 'text') {
+            const inputVal = document.getElementById(`userAns-${id}`).value.trim();
+            isCorrect = (inputVal.toLowerCase() === quiz.answer.toLowerCase());
+        } else {
+            isCorrect = (userAns === quiz.answer);
         }
 
-        if (selectedView === 'uncompleted') {
-            filtered = filtered.filter(item => !item.completed);
-        } else if (selectedView === 'completed') {
-            filtered = filtered.filter(item => item.completed);
-        }
+        feedback.className = 'quiz-feedback ' + (isCorrect ? 'correct' : 'incorrect');
+        feedback.innerText = isCorrect ? '✨ 正解です！素晴らしい！' : '❌ 残念、違います。もう一度考えてみましょう。';
 
-        // 進捗バーの計算 (現在のモード内のアイテム基準)
-        let totalInMode = items.filter(item => item.type === currentMode);
-        if (selectedSubject !== 'all') {
-            totalInMode = totalInMode.filter(item => item.subject === selectedSubject);
+        if (isCorrect && !quiz.completed) {
+            quiz.completed = true;
+            saveData();
+            document.getElementById(`item-${id}`).classList.add('completed');
+            updateProgress();
         }
-        const completedInMode = totalInMode.filter(item => item.completed).length;
-        const percent = totalInMode.length ? Math.round((completedInMode / totalInMode.length) * 100) : 0;
-        
-        document.getElementById('progressLabel').innerText = currentMode === 'task' ? 'タスク達成率' : 'クイズ正解率';
+    }
+
+    // ◯✕クイズの正解設定切り替え (問題作成者がOかXかをトグル変更できるようにする隠し/利便性パッチ)
+    function toggleTargetAnswer(id) {
+        const quiz = state.quizzes.find(q => q.id === id);
+        if (quiz && quiz.type === 'tf') {
+            quiz.answer = quiz.answer === 'O' ? 'X' : 'O';
+            saveData();
+            const label = document.getElementById(`targetAnsLabel-${id}`);
+            if (label) label.innerText = `(正解設定: ${quiz.answer === 'O' ? '◯' : '✕'})`;
+        }
+    }
+
+    // 正解の表示
+    function revealAnswer(id) {
+        const el = document.getElementById(`reveal-${id}`);
+        if (el) {
+            el.style.display = el.style.display === 'block' ? 'none' : 'block';
+        }
+    }
+
+    // 削除処理（フェードアウトアニメーション付き）
+    function deleteItem(id, type) {
+        const li = document.getElementById(`item-${id}`);
+        if (li) {
+            li.style.opacity = '0';
+            li.style.transform = 'scale(0.9) translateY(-10px)';
+            setTimeout(() => {
+                if (type === 'task') {
+                    state.tasks = state.tasks.filter(t => t.id !== id);
+                } else {
+                    state.quizzes = state.quizzes.filter(q => q.id !== id);
+                }
+                saveData();
+                renderLists();
+                updateProgress();
+            }, 300);
+        }
+    }
+
+    // 完了済みを一括削除
+    function clearCompleted() {
+        if (state.currentMode === 'task') {
+            state.tasks = state.tasks.filter(t => !t.completed);
+        } else {
+            state.quizzes = state.quizzes.filter(q => !q.completed);
+        }
+        saveData();
+        renderLists();
+        updateProgress();
+    }
+
+    // すべて初期化
+    function clearAll() {
+        if (confirm('すべてのデータが削除されます。よろしいですか？')) {
+            if (state.currentMode === 'task') {
+                state.tasks = [];
+            } else {
+                state.quizzes = [];
+            }
+            saveData();
+            renderLists();
+            updateProgress();
+        }
+    }
+
+    // 進捗率の更新
+    function updateProgress() {
+        const list = state.currentMode === 'task' ? state.tasks : state.quizzes;
+        const total = list.length;
+        const completed = list.filter(item => item.completed).length;
+        const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
+
         document.getElementById('progressPercent').innerText = `${percent}%`;
         document.getElementById('progressBar').style.width = `${percent}%`;
+        document.getElementById('progressText').innerText = 
+            state.currentMode === 'task' ? `現在のタスク達成率 (${completed}/${total})` : `現在のクイズ正解率 (${completed}/${total})`;
+    }
 
-        // 項目が空の場合の案内メッセージ
-        if (filtered.length === 0) {
-            listEl.innerHTML = `<li style="text-align:center; color:#94a3b8; padding:20px; font-size:14px;">登録されている項目はありません。上の入力エリアから追加してください。</li>`;
-            return;
-        }
+    // リストの描画
+    function renderLists() {
+        const taskList = document.getElementById('taskList');
+        const quizList = document.getElementById('quizList');
+        
+        taskList.innerHTML = '';
+        quizList.innerHTML = '';
 
-        // リスト描画
-        filtered.forEach(item => {
-            const li = document.createElement('li');
-            li.className = `list-item ${item.completed ? 'completed' : ''}`;
-            
-            // 教科に応じたクラス付与
-            const subMap = { '数学':'math', '国語':'japanese', '英語':'english', '理科':'science', '社会':'social', 'その他':'other' };
-            li.classList.add(`item-${subMap[item.subject] || 'other'}`);
-
-            // 教科ごとのバッジスタイル生成
-            let badgeStyle = '';
-            if(item.subject === '数学') badgeStyle = 'background:#e0f2fe; color:#0369a1;';
-            if(item.subject === '国語') badgeStyle = 'background:#fee2e2; color:#b91c1c;';
-            if(item.subject === '英語') badgeStyle = 'background:#dcfce7; color:#15803d;';
-            if(item.subject === '理科') badgeStyle = 'background:#f3e8ff; color:#6b21a8;';
-            if(item.subject === '社会') badgeStyle = 'background:#fef3c7; color:#b45309;';
-            if(item.subject === 'その他') badgeStyle = 'background:#ccfbf1; color:#0f766e;';
-
-            if (item.type === 'task') {
-                // 通常のタスク管理モードのUI
+        // 1. タスクリストの構築
+        state.tasks
+            .filter(t => state.currentFilter === 'all' || t.subject === state.currentFilter)
+            .forEach(task => {
+                const subjInfo = subjectMap[task.subject] || subjectMap['other'];
+                const li = document.createElement('li');
+                li.id = `item-${task.id}`;
+                li.className = `${subjInfo.class} ${task.completed ? 'completed' : ''}`;
+                
                 li.innerHTML = `
-                    <div class="item-main-row">
-                        <input type="checkbox" class="item-checkbox" ${item.completed ? 'checked' : ''} onclick="toggleItem(${item.id})">
-                        <div class="item-content">
-                            <span class="item-tag" style="${badgeStyle}">${item.subject}</span>
-                            <span>${item.content}</span>
-                        </div>
-                        <button class="delete-btn" onclick="deleteItem(${item.id})">✕</button>
+                    <div class="list-main-row">
+                        <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTask(${task.id}, this.checked)">
+                        <span class="task-text">${task.text}</span>
+                        <span class="subject-badge ${subjInfo.bg}">${subjInfo.name}</span>
+                        <button class="delete-btn" onclick="deleteItem(${task.id}, 'task')">✕</button>
                     </div>
                 `;
-            } else {
-                // 自作クイズモードのUI
-                let quizInteractiveArea = '';
-                
-                if (item.quizType === 'text') {
-                    quizInteractiveArea = `
-                        <div class="answer-input-group">
-                            <input type="text" id="ans-input-${item.id}" placeholder="解答を入力してください" value="${item.userAnswer || ''}" ${item.completed ? 'disabled' : ''}>
-                            <button class="primary-btn" style="padding:6px 12px; font-size:12px;" onclick="checkQuizAnswer(${item.id}, 'text')" ${item.completed ? 'disabled' : ''}>判定</button>
+                taskList.appendChild(li);
+            });
+
+        // 2. クイズリストの構築
+        state.quizzes
+            .filter(q => state.currentFilter === 'all' || q.subject === state.currentFilter)
+            .forEach(quiz => {
+                const subjInfo = subjectMap[quiz.subject] || subjectMap['other'];
+                const li = document.createElement('li');
+                li.id = `item-${quiz.id}`;
+                li.className = `${subjInfo.class} ${quiz.completed ? 'completed' : ''}`;
+
+                let interactiveArea = '';
+                if (quiz.type === 'text') {
+                    interactiveArea = `
+                        <div class="quiz-input-area">
+                            <input type="text" id="userAns-${quiz.id}" placeholder="解答を入力してください" onkeypress="if(event.key==='Enter') checkQuizAnswer(${quiz.id})">
+                            <button class="quiz-check-btn" onclick="checkQuizAnswer(${quiz.id})">判定</button>
                         </div>
                     `;
                 } else {
-                    const isO = item.userAnswer === 'O';
-                    const isX = item.userAnswer === 'X';
-                    quizInteractiveArea = `
-                        <div class="ox-group">
-                            <button class="ox-btn ${isO ? 'selected-o' : ''}" onclick="checkQuizAnswer(${item.id}, 'ox-o')" ${item.completed ? 'disabled' : ''}>◯</button>
-                            <button class="ox-btn ${isX ? 'selected-x' : ''}" onclick="checkQuizAnswer(${item.id}, 'ox-x')" ${item.completed ? 'disabled' : ''}>✕</button>
+                    interactiveArea = `
+                        <div class="quiz-tf-buttons">
+                            <button class="tf-btn btn-o" onclick="checkQuizAnswer(${quiz.id}, 'O')">◯</button>
+                            <button class="tf-btn btn-x" onclick="checkQuizAnswer(${quiz.id}, 'X')">✕</button>
                         </div>
                     `;
                 }
 
-                // 正誤判定メッセージの表示
-                let resultMessage = '';
-                if (item.userAnswer !== null) {
-                    if (item.isCorrect) {
-                        resultMessage = `<div class="result-message result-correct">✨ 正解です！</div>`;
-                    } else {
-                        resultMessage = `<div class="result-message result-incorrect">❌ 残念、違います。もう一度考えてみましょう！</div>`;
-                    }
-                }
+                const displayAnswer = quiz.type === 'tf' ? (quiz.answer === 'O' ? '◯' : '✕') : quiz.answer;
 
                 li.innerHTML = `
-                    <div class="item-main-row">
-                        <div class="item-content">
-                            <span class="item-tag" style="${badgeStyle}">${item.subject}</span>
-                            <span class="quiz-type-badge">[${item.quizType === 'text' ? '記述式' : '◯✕問題'}]</span>
-                            <div style="margin-top: 8px; font-weight: 500;">${item.content}</div>
-                            
-                            <div class="quiz-container">
-                                ${quizInteractiveArea}
-                                ${resultMessage}
-                                <button class="show-answer-btn" onclick="toggleRevealAnswer(${item.id})">正解を確認する</button>
-                                <div id="reveal-${item.id}" class="answer-reveal" style="display:none;">
-                                    正解: <strong>${item.quizType === 'ox' ? (item.answer === 'O' ? '◯' : '✕') : item.answer}</strong>
-                                </div>
-                            </div>
+                    <div class="list-main-row">
+                        <span class="task-text" style="font-weight:600;">Q. ${quiz.text}</span>
+                        <span class="subject-badge ${subjInfo.bg}">${subjInfo.name}</span>
+                        <button class="delete-btn" onclick="deleteItem(${quiz.id}, 'quiz')">✕</button>
+                    </div>
+                    <div class="quiz-body">
+                        ${quiz.completed ? '<div class="quiz-feedback correct" style="display:block;">✨ この問題は正解済みです</div>' : interactiveArea}
+                        <div class="quiz-feedback" id="feedback-${quiz.id}"></div>
+                        <div class="answer-reveal" onclick="revealAnswer(${quiz.id})">正解を確認する</div>
+                        <div class="revealed-text" id="reveal-${quiz.id}">
+                            正解: <strong>${displayAnswer}</strong> 
+                            ${quiz.type === 'tf' ? `<span id="targetAnsLabel-${quiz.id}" style="font-size:11px;color:var(--text-sub);cursor:pointer;margin-left:5px;" onclick="toggleTargetAnswer(${quiz.id})">(正解設定を切り替える)</span>` : ''}
                         </div>
-                        <button class="delete-btn" onclick="deleteItem(${item.id})">✕</button>
                     </div>
                 `;
-            }
+                quizList.appendChild(li);
+            });
+    }
 
-            listEl.appendChild(li);
-        });
+    // 全体描画
+    function render() {
+        renderLists();
+        updateProgress();
     }
 </script>
-
 </body>
 </html>
